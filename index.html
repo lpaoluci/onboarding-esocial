@@ -221,6 +221,7 @@
     <button class="tab-btn active" data-tab="mapa">Mapeamento de Campos</button>
     <button class="tab-btn" data-tab="caminhos">Caminhos de Extração</button>
     <button class="tab-btn" data-tab="atencao">O que dá e o que não dá pra extrair</button>
+    <button class="tab-btn" data-tab="folha">Folha do Mês (08/2026)</button>
   </div>
 </nav>
 
@@ -487,6 +488,64 @@
   <p class="section-lead">Resumo — detalhe completo na aba "Caminhos de Extração".</p>
   <div class="status-row"><span class="status-pill ok" style="width:90px">CAMINHO 1/2</span><span class="label">Em massa, por período</span><span class="detail">Janela de até 35 dias, sem filtro de CPF — traz todo mundo cuja admissão (ou folha) caiu naquele intervalo. Repetir janelas pra cobrir a história toda.</span></div>
   <div class="status-row"><span class="status-pill ok" style="width:90px">CAMINHO 3</span><span class="label">Individual, por CPF</span><span class="detail">Mesmo evento, mesmo conteúdo completo — mas 1 pedido por pessoa. Só compensa pra isolar alguém específico, já sabendo a janela aproximada.</span></div>
+</section>
+
+<!-- ===================== ABA: FOLHA DO MÊS ===================== -->
+<section id="tab-folha" class="tabpanel" hidden>
+  <p class="lead">O que foi exportado do eSocial pra competência <strong>08/2026</strong>, via Caminho 1 (período, sem filtro de CPF). Aqui só contagens agregadas e um modelo ilustrativo da estrutura — <strong>nenhum dado real de colaborador</strong>.</p>
+
+  <table class="summary">
+    <thead><tr><th>O que foi exportado</th><th>Quantidade</th><th>Evento</th></tr></thead>
+    <tbody>
+      <tr><td class="file">Colaboradores com lançamento na folha</td><td>53</td><td><code class="path">S-1200</code></td></tr>
+      <tr><td class="file">Lançamentos de rubrica (total)</td><td>294</td><td><code class="path">S-1200</code></td></tr>
+      <tr><td class="file">Rubricas distintas usadas</td><td>25</td><td><code class="path">S-1200</code> / <code class="path">S-1010</code></td></tr>
+      <tr><td class="file">Registros de pagamento</td><td>89</td><td><code class="path">S-1210</code></td></tr>
+      <tr><td class="file">Totalizadores por trabalhador (INSS/IRRF/FGTS)</td><td>69–89</td><td><code class="path">S-5001</code>/<code class="path">S-5002</code>/<code class="path">S-5003</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h">Rubricas encontradas (contagem, sem valores)</h2>
+  <p class="section-lead">Quantas vezes cada rubrica apareceu nos 294 lançamentos — mostra a variedade real que o parser precisa lidar, sem expor nenhum valor financeiro do cliente.</p>
+  <table class="fields">
+    <thead><tr><th>Código da rubrica</th><th>Descrição</th><th>Natureza</th><th style="text-align:right">Lançamentos</th></tr></thead>
+    <tbody>
+      <tr><td class="campo"><code class="path">buk_salario</code></td><td>Salário</td><td class="obs">Vencimento</td><td style="text-align:right">53</td></tr>
+      <tr><td class="campo"><code class="path">buk_inss_empregado</code></td><td>INSS Empregado</td><td class="obs">Desconto</td><td style="text-align:right">53</td></tr>
+      <tr><td class="campo"><code class="path">horas_extras_50percent</code></td><td>Horas Extras 50%</td><td class="obs">Vencimento</td><td style="text-align:right">29</td></tr>
+      <tr><td class="campo"><code class="path">buk_dsr_horas_extras</code></td><td>DSR sobre Horas Extras</td><td class="obs">Vencimento</td><td style="text-align:right">29</td></tr>
+      <tr><td class="campo"><code class="path">Vale Transporte</code></td><td>Vale Transporte</td><td class="obs">Desconto</td><td style="text-align:right">27</td></tr>
+      <tr><td class="campo"><code class="path">ajuda_de_custo_telefone</code></td><td>Ajuda de Custo Telefone</td><td class="obs">Não classificada*</td><td style="text-align:right">22</td></tr>
+      <tr><td class="campo"><code class="path">buk_atrasos</code></td><td>Atrasos</td><td class="obs">Não classificada*</td><td style="text-align:right">19</td></tr>
+      <tr><td class="campo"><code class="path">faltas_dias</code></td><td>Faltas</td><td class="obs">Não classificada*</td><td style="text-align:right">9</td></tr>
+      <tr><td class="campo"><code class="path">horas_extras_100</code></td><td>Horas Extras 100%</td><td class="obs">Não classificada*</td><td style="text-align:right">8</td></tr>
+      <tr><td class="campo"><code class="path">buk_irrf_mensal</code></td><td>IRRF Mensal</td><td class="obs">Não classificada*</td><td style="text-align:right">3</td></tr>
+      <tr><td class="campo">+ 15 outras rubricas</td><td>Salário-família, produtividade, férias, adiantamento, reembolsos etc.</td><td class="obs">—</td><td style="text-align:right">≤ 2 cada</td></tr>
+    </tbody>
+  </table>
+  <p class="section-lead" style="margin-top:10px;">* "Não classificada" = o código não veio com descrição oficial no S-1010 baixado nesse período (provavelmente cadastrado antes da janela de 35 dias) — descrição acima inferida pelo nome do código.</p>
+
+  <h2 class="section-h">Modelo de como vem (exemplo ilustrativo — dados fictícios)</h2>
+  <p class="section-lead">Estrutura de 1 colaborador fictício, pra mostrar o formato que o parser recebe. CPF, nome e valores abaixo são inventados.</p>
+  <table class="fields">
+    <thead><tr><th>Campo</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td class="campo">CPF</td><td class="obs">000.000.000-00 <em>(fictício)</em></td></tr>
+      <tr><td class="campo">Nome</td><td class="obs">Colaborador Exemplo <em>(fictício)</em></td></tr>
+      <tr><td class="campo">Matrícula</td><td class="obs">00000000000 <em>(fictício)</em></td></tr>
+      <tr><td class="campo">Competência</td><td class="obs">2026-08</td></tr>
+    </tbody>
+  </table>
+  <table class="fields" style="margin-top:10px;">
+    <thead><tr><th>Rubrica</th><th>Descrição</th><th>Natureza</th><th style="text-align:right">Valor (fictício)</th></tr></thead>
+    <tbody>
+      <tr><td class="campo"><code class="path">buk_salario</code></td><td>Salário</td><td class="obs">Vencimento</td><td style="text-align:right">R$ 2.000,00</td></tr>
+      <tr><td class="campo"><code class="path">horas_extras_50percent</code></td><td>Horas Extras 50%</td><td class="obs">Vencimento</td><td style="text-align:right">R$ 150,00</td></tr>
+      <tr><td class="campo"><code class="path">Vale Transporte</code></td><td>Vale Transporte</td><td class="obs">Desconto</td><td style="text-align:right">R$ 120,00</td></tr>
+      <tr><td class="campo"><code class="path">buk_inss_empregado</code></td><td>INSS Empregado</td><td class="obs">Desconto</td><td style="text-align:right">R$ 180,00</td></tr>
+      <tr><td class="campo" style="font-weight:700">Líquido (S-1210)</td><td></td><td></td><td style="text-align:right; font-weight:700">R$ 1.850,00</td></tr>
+    </tbody>
+  </table>
 </section>
 </main>
 
