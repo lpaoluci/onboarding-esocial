@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Onboarding eSocial — Mapeamento de Campos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101826;
+    --navy:#16233F;
+    --navy-2:#1F335C;
+    --blue:#2F6FED;
+    --blue-soft:#E7EFFD;
+    --amber:#B45309;
+    --amber-soft:#FDF3E3;
+    --gray:#5B6472;
+    --gray-soft:#EEF0F3;
+    --bg:#F6F7F9;
+    --paper:#FFFFFF;
+    --line:#E3E6EB;
+    --text:#1C2333;
+    --muted:#5B6472;
+    --radius:10px;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1420; --paper:#141C2B; --line:#26314A; --text:#E7EAF0; --muted:#9AA5B6;
+      --navy:#0B1220; --navy-2:#101B33; --blue-soft:#152541; --gray-soft:#1B2436; --amber-soft:#2A2013;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1420; --paper:#141C2B; --line:#26314A; --text:#E7EAF0; --muted:#9AA5B6;
+    --navy:#0B1220; --navy-2:#101B33; --blue-soft:#152541; --gray-soft:#1B2436; --amber-soft:#2A2013;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px));}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  code, .path{
+    font-family:'IBM Plex Mono',ui-monospace,monospace;
+    font-size:0.86em;
+  }
+  header.top{
+    background:var(--navy); color:#fff;
+    padding-top: calc(22px + env(safe-area-inset-top, 0px));
+    padding-bottom:22px; padding-left:24px; padding-right:24px;
+    position:sticky; top:0; z-index:20;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .top-inner{max-width:980px; margin:0 auto; display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .brand{font-size:13px; letter-spacing:0.02em; color:#9FB3E0; margin-bottom:4px;}
+  h1{font-size:22px; margin:0; font-weight:700; letter-spacing:-0.01em;}
+  .top-meta{font-size:13px; color:#B7C4E0;}
+  main{max-width:980px; margin:0 auto; padding:36px 24px 80px;}
+  .lead{font-size:16px; line-height:1.6; color:var(--muted); max-width:640px; margin-bottom:28px;}
+  .lead strong{color:var(--text);}
+  .toolbar{display:flex; gap:10px; align-items:center; margin-bottom:28px; flex-wrap:wrap;}
+  button.ghost{
+    font:inherit; font-size:13px; font-weight:600; color:var(--navy-2);
+    background:var(--paper); border:1px solid var(--line); border-radius:8px;
+    padding:8px 14px; cursor:pointer;
+  }
+  :root[data-theme="dark"] button.ghost, @media (prefers-color-scheme: dark){ button.ghost{color:#CBD5EA;} }
+  button.ghost:hover{border-color:var(--blue);}
+  .legend{display:flex; gap:14px; font-size:12.5px; color:var(--muted); flex-wrap:wrap; margin-left:auto;}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:9px; height:9px; border-radius:2px; display:inline-block;}
+
+  table.summary{width:100%; border-collapse:collapse; margin-bottom:36px; font-size:14px;}
+  table.summary th{text-align:left; font-size:12px; text-transform:none; color:var(--muted); font-weight:600; padding:0 12px 10px 0; border-bottom:2px solid var(--line);}
+  table.summary td{padding:12px 12px 12px 0; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.summary td.file{font-weight:600;}
+  table.summary tr:last-child td{border-bottom:none;}
+
+  details.sheet{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:14px; overflow:hidden;
+  }
+  details.sheet > summary{
+    list-style:none; cursor:pointer; padding:18px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  details.sheet > summary::-webkit-details-marker{display:none;}
+  .sheet-title{display:flex; align-items:baseline; gap:10px;}
+  .sheet-title h2{font-size:16px; margin:0; font-weight:700;}
+  .sheet-count{font-size:12.5px; color:var(--muted);}
+  .chev{width:18px; height:18px; flex-shrink:0; transition:transform .15s ease; color:var(--muted);}
+  details[open] > summary .chev{transform:rotate(90deg);}
+  .sheet-body{padding:0 20px 20px;}
+  .sheet-note{font-size:13.5px; color:var(--muted); margin:0 0 16px; line-height:1.55;}
+
+  table.fields{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.fields th{
+    text-align:left; font-size:11.5px; letter-spacing:0.01em; color:var(--muted);
+    font-weight:600; padding:0 10px 8px 0; border-bottom:1px solid var(--line);
+  }
+  table.fields td{padding:10px 10px 10px 0; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5;}
+  table.fields tr:last-child td{border-bottom:none;}
+  table.fields td.campo{font-weight:600; white-space:nowrap;}
+  table.fields td.obs{color:var(--muted); font-size:13px;}
+
+  .badge{
+    display:inline-block; font-size:11px; font-weight:600; padding:2px 8px;
+    border-radius:20px; white-space:nowrap;
+  }
+  .badge.evento{background:var(--blue-soft); color:var(--blue);}
+  .badge.interno{background:var(--gray-soft); color:var(--gray);}
+  .badge.atencao{background:var(--amber-soft); color:var(--amber);}
+
+  footer{max-width:980px; margin:0 auto; padding:0 24px 60px; font-size:12.5px; color:var(--muted); line-height:1.6;}
+  footer a{color:var(--blue);}
+
+  nav.tabs{
+    background:var(--navy-2); border-bottom:1px solid rgba(255,255,255,0.08);
+    position:sticky; top:calc(70px + env(safe-area-inset-top, 0px)); z-index:19;
+  }
+  .tabs-inner{max-width:980px; margin:0 auto; display:flex; gap:4px; padding:0 24px; overflow-x:auto;}
+  .tab-btn{
+    font:inherit; font-size:13.5px; font-weight:600; color:#9FB3E0;
+    background:none; border:none; border-bottom:2px solid transparent;
+    padding:13px 4px; margin-right:22px; cursor:pointer; white-space:nowrap;
+  }
+  .tab-btn:hover{color:#fff;}
+  .tab-btn.active{color:#fff; border-bottom-color:var(--blue);}
+  .tabpanel[hidden]{display:none;}
+
+  .path-block{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin-bottom:16px;
+  }
+  .path-block h3{font-size:15px; margin:0 0 4px; font-weight:700;}
+  .path-block .when{font-size:13px; color:var(--muted); margin:0 0 14px;}
+  .path-block ol{margin:0; padding-left:20px; font-size:13.5px; line-height:1.7;}
+  .path-block ol li{margin-bottom:4px;}
+  .path-block .note{
+    margin-top:12px; padding:10px 12px; background:var(--amber-soft); border-radius:8px;
+    font-size:13px; color:var(--text); line-height:1.55;
+  }
+
+  .action-card{
+    background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--amber);
+    border-radius:8px; padding:14px 16px; margin-bottom:10px;
+  }
+  .action-card.validate{border-left-color:var(--blue);}
+  .action-card h4{margin:0 0 4px; font-size:14px; font-weight:700;}
+  .action-card p{margin:0; font-size:13px; color:var(--muted); line-height:1.55;}
+  .action-card .tag{
+    display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.03em; color:var(--amber); margin-bottom:6px;
+  }
+  .action-card.validate .tag{color:var(--blue);}
+
+  h2.section-h{font-size:17px; margin:32px 0 6px; font-weight:700;}
+  h2.section-h:first-child{margin-top:0;}
+  p.section-lead{font-size:13.5px; color:var(--muted); margin:0 0 16px; max-width:640px; line-height:1.6;}
+
+  .answer-box{
+    background:var(--navy); color:#fff; border-radius:var(--radius);
+    padding:22px 24px; margin-bottom:28px;
+  }
+  .answer-box .q{font-size:13px; color:#9FB3E0; font-weight:600; margin:0 0 8px;}
+  .answer-box .a{font-size:15px; line-height:1.65; margin:0;}
+  .answer-box .a strong{color:#fff;}
+  .answer-box .a .yes{color:#7CD9A8; font-weight:700;}
+  .answer-box .caveat{
+    margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.15);
+    font-size:13.5px; line-height:1.6; color:#C9D4EC;
+  }
+
+  .status-row{
+    display:flex; align-items:flex-start; gap:12px; padding:12px 0;
+    border-bottom:1px solid var(--line); font-size:13.5px;
+  }
+  .status-row:last-child{border-bottom:none;}
+  .status-pill{
+    flex-shrink:0; width:64px; text-align:center; font-size:11px; font-weight:700;
+    padding:3px 0; border-radius:20px; margin-top:1px;
+  }
+  .status-pill.ok{background:var(--blue-soft); color:var(--blue);}
+  .status-pill.no{background:var(--gray-soft); color:var(--gray);}
+  .status-row .label{font-weight:600; min-width:220px;}
+  .status-row .detail{color:var(--muted); flex:1;}
+
+  @media (max-width:640px){
+    table.fields, table.fields thead, table.fields tbody, table.fields tr{display:block;}
+    table.fields thead{display:none;}
+    table.fields tr{border-bottom:1px solid var(--line); padding:12px 0;}
+    table.fields td{border:none; padding:3px 0; display:block;}
+    table.fields td.campo{font-size:14px;}
+    table.fields td:empty{display:none;}
+    table.summary, table.summary thead, table.summary tbody, table.summary tr{display:block;}
+    table.summary thead{display:none;}
+    table.summary tr{border-bottom:1px solid var(--line); padding:12px 0;}
+    table.summary td{border:none; padding:3px 0; display:block;}
+    .legend{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div>
+      <div class="brand">Buk Brasil · Onboarding eSocial</div>
+      <h1>Mapeamento de Dados e Campos</h1>
+    </div>
+    <div class="top-meta">Validado com extrato real · 08/2026</div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="mapa">Mapeamento de Campos</button>
+    <button class="tab-btn" data-tab="caminhos">Caminhos de Extração</button>
+    <button class="tab-btn" data-tab="atencao">O que dá e o que não dá pra extrair</button>
+  </div>
+</nav>
+
+<main>
+<section id="tab-mapa" class="tabpanel">
+  <p class="lead">
+    Campo a campo dos 3 layouts de importação do Buk (Colaboradores, Trabalhos, Subáreas): para cada campo,
+    o evento e o caminho exato do eSocial correspondente — ou a indicação de que é uso interno, sem
+    equivalente no eSocial. <strong>Os caminhos abaixo foram confirmados</strong> lendo um extrato real de
+    eSocial Download (507 XMLs, 10 admissões + 53 folhas de um cliente), não apenas o leiaute teórico.
+  </p>
+
+  <div class="toolbar">
+    <button class="ghost" id="expandAll">Expandir tudo</button>
+    <button class="ghost" id="collapseAll">Recolher tudo</button>
+    <div class="legend">
+      <span><span class="dot" style="background:var(--blue)"></span>evento eSocial</span>
+      <span><span class="dot" style="background:var(--gray)"></span>uso interno</span>
+      <span><span class="dot" style="background:var(--amber)"></span>ponto de atenção</span>
+    </div>
+  </div>
+
+  <table class="summary">
+    <thead><tr><th>Planilha</th><th>Evento(s) principal(is)</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="file">1_Subáreas.xls</td>
+        <td><code class="path">S-1020</code> (indireto, via folha)</td>
+        <td>Divisão/Área/Subárea são organograma interno; só a subárea-folha vira código de lotação, e mesmo assim não aparece na admissão — só no S-1200 mensal.</td>
+      </tr>
+      <tr>
+        <td class="file">4_Colaboradores.xls</td>
+        <td><code class="path">S-2200</code> grupo <code class="path">trabalhador</code></td>
+        <td>Dados cadastrais e pessoais. 17 dos 26 campos obrigatórios vieram 100% preenchidos nos 10 casos reais testados.</td>
+      </tr>
+      <tr>
+        <td class="file">5_Trabalhos.xls</td>
+        <td><code class="path">S-2200</code> grupo <code class="path">vinculo</code></td>
+        <td>Dados contratuais. Código Subárea confirmado como existente — mas só no S-1200, não no S-2200 (ver linha correspondente).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== COLABORADORES ===================== -->
+  <details class="sheet" open>
+    <summary>
+      <div class="sheet-title">
+        <h2>1. Colaboradores.xls <span style="font-weight:400;color:var(--muted)">(aba "Funcionários")</span></h2>
+        <span class="sheet-count">45 campos</span>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="sheet-body">
+      <p class="sheet-note">Confirmado nos 10 colaboradores admitidos dentro da janela do extrato: todo campo marcado <span class="badge evento">evento</span> veio 100% preenchido.</p>
+      <table class="fields">
+        <thead><tr><th style="width:20%">Campo Buk</th><th style="width:12%">Origem</th><th style="width:30%">Caminho eSocial</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td class="campo">Tipo de Documento</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/cpfTrab</code> (implícito)</td><td class="obs">O leiaute exige CPF; não há grupo de "outro documento" para brasileiros.</td></tr>
+          <tr><td class="campo">Número de Documento*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/cpfTrab</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Matrícula*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/matricula</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Sobrenomes* / Nome*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nmTrab</code></td><td class="obs">Vem como nome completo — split aplicado com sucesso nos 10 reais.</td></tr>
+          <tr><td class="campo">Nome Social</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nmSoc</code></td><td class="obs">Opcional — nenhum dos 10 tinha.</td></tr>
+          <tr><td class="campo">Gênero*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/sexo</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Raça/Cor*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/racaCor</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Grau de Instrução*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/grauInstr</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Nome Mãe / Nome Pai</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nmMae</code>, <code class="path">nmPai</code></td><td class="obs">Opcional — nenhum dos 10 reais veio preenchido.</td></tr>
+          <tr><td class="campo">Tipos de deficiência</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/infoDeficiencia/*</code></td><td class="obs">Opcional; todos "N" nos 10 reais.</td></tr>
+          <tr><td class="campo">Nacionalidade*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nascimento/paisNac</code></td><td class="obs">Confirmado 10/10 (todos código 105 = Brasil).</td></tr>
+          <tr><td class="campo">País de Nascimento*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nascimento/paisNascto</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Data de Nascimento*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/nascimento/dtNascto</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Estado Civil*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/estCiv</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">CEP* / Logradouro* / Endereço* / Número* / Bairro / Complemento / Estado* / Município*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/endereco/brasil/*</code></td><td class="obs">Município vem como código IBGE — precisa de tabela de/para.</td></tr>
+          <tr><td class="campo">Telefone* / Telefone Fixo</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/contato/fonePrinc</code></td><td class="obs">Confirmado 10/10 no principal; sem campo padronizado para "fixo".</td></tr>
+          <tr><td class="campo">E-mail Pessoal</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/contato/emailPrinc</code></td><td class="obs">Confirmado 10/10 — mas não é o e-mail corporativo pedido no layout.</td></tr>
+          <tr><td class="campo">RG / Órgão / UF / Data Emissão</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/documentos/RG/*</code></td><td class="obs">Opcional — nenhum dos 10 reais veio preenchido.</td></tr>
+          <tr><td class="campo">Número / Série / UF / Data Emissão CTPS</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoRegCTPS</code></td><td class="obs">Sem data de emissão no leiaute. Nenhum dos 10 reais tinha CTPS declarada.</td></tr>
+          <tr><td class="campo">Código de Ficha*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente — não existe no eSocial.</td></tr>
+          <tr><td class="campo">Admissão Empresa*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoRegimeTrab/infoCeletista/dtAdm</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">E-mail Corporativo*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente — definido pela própria empresa.</td></tr>
+          <tr><td class="campo">Forma de Pagamento* / Banco* / Tipo de Conta* / Número de Conta* / Agência*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente nos 10 reais — dados bancários não vão ao eSocial.</td></tr>
+          <tr><td class="campo">Código ANS do Plano de Saúde</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Não mapeado no eSocial.</td></tr>
+          <tr><td class="campo">CNPJ da Empresa</td><td><span class="badge atencao">atenção</span></td><td><code class="path">vinculo/infoContrato/localTrabalho/localTrabGeral/nrInsc</code></td><td class="obs">O CNPJ do cabeçalho (<code class="path">ideEmpregador/nrInsc</code>) vem truncado a 8 dígitos — usar este caminho para o CNPJ completo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- ===================== TRABALHOS ===================== -->
+  <details class="sheet" open>
+    <summary>
+      <div class="sheet-title">
+        <h2>2. Trabalhos.xls</h2>
+        <span class="sheet-count">31 campos</span>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="sheet-body">
+      <p class="sheet-note">Dados contratuais. Confirmado nos 10 admitidos + cruzado com os 53 só-folha para os campos que também aparecem no S-1200.</p>
+      <table class="fields">
+        <thead><tr><th style="width:20%">Campo Buk</th><th style="width:12%">Origem</th><th style="width:30%">Caminho eSocial</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td class="campo">Número de Documento*</td><td><span class="badge evento">evento</span></td><td><code class="path">trabalhador/cpfTrab</code></td><td class="obs">Chave de ligação com Colaboradores.xls.</td></tr>
+          <tr><td class="campo">Código de Ficha</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/matricula</code></td><td class="obs">É este campo que é o "matricula" real do eSocial.</td></tr>
+          <tr><td class="campo">Nome ou CNPJ da Empresa*</td><td><span class="badge atencao">atenção</span></td><td><code class="path">vinculo/infoContrato/localTrabalho/localTrabGeral/nrInsc</code></td><td class="obs">Mesmo caso do CNPJ truncado — usar este caminho, não o do cabeçalho do evento.</td></tr>
+          <tr><td class="campo">Data de início*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoRegimeTrab/infoCeletista/dtAdm</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Data Término de Contrato*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoContrato/duracao/dtTerm</code></td><td class="obs">Só existe em contrato por prazo determinado — os 10 reais eram todos temporários.</td></tr>
+          <tr><td class="campo">Cláusula assecuratória</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoContrato/duracao/clauAssec</code></td><td class="obs">Só relevante em prazo determinado.</td></tr>
+          <tr><td class="campo">Categoria do trabalhador*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoContrato/codCateg</code></td><td class="obs">Confirmado 10/10 (código 106 = temporário, nos casos reais).</td></tr>
+          <tr><td class="campo">Tipo de Contrato</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/infoContrato/duracao/tpContr</code></td><td class="obs">Determinado / indeterminado.</td></tr>
+          <tr><td class="campo">Indicativo de Admissão*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoRegimeTrab/infoCeletista/indAdmissao</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Tipo de Admissão*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoRegimeTrab/infoCeletista/tpAdmissao</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Regime de Jornada*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoRegimeTrab/infoCeletista/tpRegJor</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Tipo de Jornada*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/horContratual/tpJornada</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Horas Semanais*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/horContratual/qtdHrsSem</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Descrição da Jornada*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/horContratual/dscJorn</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Código eSocial</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/matricula</code></td><td class="obs">Mesmo dado de "Código de Ficha" — confirmar duplicidade no layout.</td></tr>
+          <tr><td class="campo">Regime Previdenciário*</td><td><span class="badge evento">evento</span></td><td><code class="path">vinculo/tpRegPrev</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Contrato de Experiência</td><td><span class="badge atencao">atenção</span></td><td>deriva de <code class="path">duracao/tpContr</code></td><td class="obs">Não é campo direto — precisa ser inferido.</td></tr>
+          <tr><td class="campo">Dias da Jornada*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Sem campo estruturado no eSocial — só texto livre em <code class="path">dscJorn</code>.</td></tr>
+          <tr><td class="campo">Código Subárea*</td><td><span class="badge atencao">atenção</span></td><td><code class="path">ideEstabLot/codLotacao</code></td><td class="obs">Confirmado que existe — mas só aparece no <strong>S-1200</strong> (folha mensal), não no S-2200 (admissão). Nos 10 admitidos não veio; nos 53 da folha, veio 53/53.</td></tr>
+          <tr><td class="campo">Cargo*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/nmCargo</code> + <code class="path">CBOCargo</code></td><td class="obs">Confirmado 10/10, nome + CBO.</td></tr>
+          <tr><td class="campo">Supervisor* / Ficha Supervisor</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente — hierarquia interna, não existe no eSocial.</td></tr>
+          <tr><td class="campo">Cargo de Confiança / Função de Confiança*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente nos 10 reais.</td></tr>
+          <tr><td class="campo">Adicional de Insalubridade / Periculosidade</td><td><span class="badge atencao">atenção</span></td><td>relacionado a <code class="path">S-2240</code></td><td class="obs">Fora do S-2200 — apurado via evento de SST, refletido em rubrica no S-1200.</td></tr>
+          <tr><td class="campo">Salário*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/remuneracao/vrSalFx</code></td><td class="obs">Confirmado 10/10.</td></tr>
+          <tr><td class="campo">Tipo de Remuneração*</td><td><span class="badge evento">evento</span></td><td><code class="path">infoContrato/remuneracao/undSalFixo</code></td><td class="obs">Confirmado 10/10 (código 5 = mensal).</td></tr>
+          <tr><td class="campo">Estado / Município (lotação)</td><td><span class="badge atencao">atenção</span></td><td><code class="path">ideEstabLot</code></td><td class="obs">Mesmo caso de Código Subárea — só disponível via S-1200.</td></tr>
+          <tr><td class="campo">Múltiplos Vínculos Empregatícios*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente — não é declarado no S-2200 nem no S-1200.</td></tr>
+          <tr><td class="campo">Com Documentos de Pagamento</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Controle interno do Buk.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- ===================== SUBAREAS ===================== -->
+  <details class="sheet">
+    <summary>
+      <div class="sheet-title">
+        <h2>3. Subáreas.xls <span style="font-weight:400;color:var(--muted)">(aba "Áreas")</span></h2>
+        <span class="sheet-count">6 campos</span>
+      </div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="sheet-body">
+      <p class="sheet-note">Estrutura organizacional interna — só a ponta da hierarquia (subárea-folha) tem alguma relação com o eSocial, e mesmo assim indireta.</p>
+      <table class="fields">
+        <thead><tr><th style="width:20%">Campo Buk</th><th style="width:12%">Origem</th><th style="width:30%">Caminho eSocial</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr><td class="campo">Centro de Custo</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Uso interno de custeio/BI do Buk.</td></tr>
+          <tr><td class="campo">Divisão*</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Confirmado ausente — organograma interno, sem equivalente no eSocial.</td></tr>
+          <tr><td class="campo">Área</td><td><span class="badge interno">interno</span></td><td>—</td><td class="obs">Organiza a hierarquia interna.</td></tr>
+          <tr><td class="campo">Subárea (níveis 1–3)</td><td><span class="badge atencao">atenção</span></td><td><code class="path">ideEstabLot/codLotacao</code></td><td class="obs">A subárea de nível mais baixo (folha) é o que vira o código de lotação — mas só aparece via S-1200, nunca no cadastro/admissão.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <p style="font-size:13px; color:var(--muted); margin-top:30px; line-height:1.6;">
+    Baseado no mapeamento campo a campo entre os 3 layouts de onboarding fornecidos e os caminhos reais
+    encontrados em um extrato de eSocial Download (10 admissões via S-2200, 53 colaboradores via S-1200,
+    competência 08/2026).<br>
+    Badges: <span class="badge evento">evento</span> caminho confirmado no eSocial ·
+    <span class="badge interno">interno</span> uso interno Buk, sem correspondência ·
+    <span class="badge atencao">atenção</span> existe, mas com ressalva (evento diferente do esperado, truncamento, ou requer tratamento).
+  </p>
+</section>
+
+<!-- ===================== ABA: CAMINHOS DE EXTRAÇÃO ===================== -->
+<section id="tab-caminhos" class="tabpanel" hidden>
+  <p class="lead">Os 3 caminhos possíveis dentro do eSocial (menu <strong>Downloads &gt; Solicitação</strong>, no eSocial WEB Geral). Só titular ou procurador legal com a procuração "eSocial - Download" acessa esse menu.</p>
+
+  <table class="summary">
+    <thead><tr><th>Caminho</th><th>Tipo de solicitação</th><th>Filtro adicional</th><th>Quando usar</th></tr></thead>
+    <tbody>
+      <tr><td class="file">1. Folha do mês</td><td><code class="path">Todos os eventos entregues em um determinado período</code></td><td>Nenhum</td><td>Fechamento mensal, folha analítica, conferência de rubricas</td></tr>
+      <tr><td class="file">2. Cadastro histórico</td><td><code class="path">Todos os eventos entregues em um determinado período</code></td><td>Nenhum — repete em janelas de 35 dias</td><td>Reconstruir a base cadastral completa de todos</td></tr>
+      <tr><td class="file">3. Ficha por colaborador</td><td><code class="path">Todos os eventos de um determinado trabalhador</code></td><td>CPF (dentro do mesmo período de até 35 dias)</td><td>Confirmar/isolar 1 colaborador, já sabendo a janela aproximada</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h">Passo a passo</h2>
+
+  <div class="path-block">
+    <h3>Caminho 1 — Folha do mês</h3>
+    <p class="when">Foi este caminho que gerou a folha analítica já validada.</p>
+    <ol>
+      <li>Downloads &gt; Solicitação</li>
+      <li>Tipo: "Todos os eventos entregues em um determinado período"</li>
+      <li>Data início/fim cobrindo a competência (ex.: 01/08 a 31/08) — máximo 35 dias</li>
+      <li>Salvar, acompanhar em Downloads &gt; Consulta até status "Disponível"</li>
+      <li>Baixar o .ZIP: <code class="path">S-1200</code>, <code class="path">S-1210</code>, <code class="path">S-1010</code>, <code class="path">S-5001/S-5002/S-5003</code> de todos os pagos naquele mês</li>
+    </ol>
+  </div>
+
+  <div class="path-block">
+    <h3>Caminho 2 — Cadastro histórico (janelas de 35 dias)</h3>
+    <p class="when">Único jeito de fechar cadastro completo de quem não foi admitido na janela já baixada.</p>
+    <ol>
+      <li>Mesma tela, mesmo tipo de solicitação</li>
+      <li>Primeira janela: últimos 35 dias corridos até hoje</li>
+      <li>Baixar, conferir quais <code class="path">S-2200</code>/<code class="path">S-2205</code>/<code class="path">S-2206</code> vieram (comparar CPFs com a lista de pendentes)</li>
+      <li>Repetir para a janela anterior (35 dias antes), sucessivamente</li>
+      <li>Parar quando todos os CPFs pendentes forem encontrados, ou quando as janelas pararem de retornar eventos novos</li>
+    </ol>
+    <div class="note">Limite de 12 pedidos/dia. Dica: matrículas são sequenciais — CPFs com matrícula mais alta tendem a aparecer nas primeiras janelas (mais recentes).</div>
+  </div>
+
+  <div class="path-block">
+    <h3>Caminho 3 — Ficha individual por CPF</h3>
+    <p class="when">Só compensa quando já se sabe (ou já se descobriu pelo Caminho 2) em qual janela está o S-2200 daquele colaborador.</p>
+    <ol>
+      <li>Mesma tela</li>
+      <li>Tipo: "Todos os eventos de um determinado trabalhador"</li>
+      <li>Informar o CPF no filtro adicional</li>
+      <li>Informar também data início/fim (ainda limitado a 35 dias — o filtro por CPF não elimina essa exigência)</li>
+      <li>Salvar e baixar</li>
+    </ol>
+    <div class="note">Senão é a mesma varredura do Caminho 2, só que pessoa por pessoa — mais lento, não mais rápido.</div>
+  </div>
+
+  <h2 class="section-h">Regras gerais (valem para os 3 caminhos)</h2>
+  <table class="fields">
+    <tbody>
+      <tr><td class="campo" style="width:220px">Janela máxima</td><td class="obs">35 dias por pedido, independente do tipo de solicitação</td></tr>
+      <tr><td class="campo">Limite diário</td><td class="obs">12 pedidos por dia</td></tr>
+      <tr><td class="campo">Validade do arquivo</td><td class="obs">7 dias — depois expira e precisa pedir de novo</td></tr>
+      <tr><td class="campo">Pedidos simultâneos</td><td class="obs">Não dá pra ter dois do mesmo tipo "em processamento" ao mesmo tempo</td></tr>
+      <tr><td class="campo">Formato de saída</td><td class="obs">XML dentro de um .ZIP — não sai em planilha pronta, precisa de parser</td></tr>
+      <tr><td class="campo">Acesso</td><td class="obs">Só titular ou procurador legal com a procuração "eSocial - Download"</td></tr>
+      <tr><td class="campo">Automação</td><td class="obs">Sem webservice/API nessa tela específica — só manual, via navegador. Existe webservice oficial separado (com certificado digital) que sistemas de folha usam — vale checar com o time de tecnologia se o Buk já tem essa integração.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===================== ABA: O QUE DÁ E O QUE NÃO DÁ ===================== -->
+<section id="tab-atencao" class="tabpanel" hidden>
+  <p class="lead">Visão direta pro time de Produto/Dev: o que dá pra extrair do eSocial pras 3 planilhas de importação, e o que não dá.</p>
+
+  <div class="answer-box">
+    <p class="q">Pergunta: já tendo CPF + nome + data de admissão de todo mundo, dá pra usar o CPF pra extrair o resto de Trabalhos?</p>
+    <p class="a"><span class="yes">Sim.</span> O CPF puxa o mesmo evento S-2200 que já foi validado nos 10 casos reais — <strong>é o mesmo conteúdo completo</strong>, não uma versão reduzida. Cargo, CBO, salário, jornada, categoria, tipo de admissão, regime previdenciário: tudo isso volta, exatamente como confirmado nas abas anteriores.</p>
+  </div>
+
+  <h2 class="section-h">Colaboradores.xls — o que dá e o que não dá</h2>
+  <div class="status-row"><span class="status-pill ok">DÁ</span><span class="label">Todo o bloco cadastral</span><span class="detail">CPF, matrícula, nome, gênero, raça/cor, grau de instrução, nascimento, estado civil, endereço completo, telefone, data de admissão — confirmado 10/10 via S-2200</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Código de Ficha</span><span class="detail">Não existe no eSocial</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">E-mail Corporativo</span><span class="detail">Definido pela empresa, não é declarado</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Dados bancários completos</span><span class="detail">Forma de pagamento, banco, tipo de conta, número de conta, agência — nenhum vem ao eSocial</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Código ANS do plano de saúde</span><span class="detail">Fora do escopo dos eventos analisados</span></div>
+
+  <h2 class="section-h">Trabalhos.xls — o que dá e o que não dá</h2>
+  <div class="status-row"><span class="status-pill ok">DÁ</span><span class="label">Todo o bloco contratual</span><span class="detail">Data de início/término, categoria, indicativo e tipo de admissão, regime de jornada, tipo de jornada, horas semanais, descrição da jornada, regime previdenciário, cargo, CBO, salário, tipo de remuneração — confirmado 10/10 via S-2200</span></div>
+  <div class="status-row"><span class="status-pill ok">DÁ</span><span class="label">Código Subárea (lotação)</span><span class="detail">Existe, mas só no evento de folha (S-1200), não no S-2200 — confirmado 53/53 nos casos de folha</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Supervisor / Ficha Supervisor</span><span class="detail">Hierarquia interna, sem equivalente no eSocial</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Função de Confiança</span><span class="detail">Não veio em nenhum dos casos testados</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Múltiplos Vínculos Empregatícios</span><span class="detail">Não apareceu em nenhum evento testado (S-2200 ou S-1200)</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Dias da Jornada (estruturado)</span><span class="detail">eSocial só tem texto livre (ex.: "5X2 - Administrativo"), sem campo de dias separado</span></div>
+
+  <h2 class="section-h">Subáreas.xls — o que dá e o que não dá</h2>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Centro de Custo, Divisão, Área</span><span class="detail">Organograma interno, sem equivalente no eSocial</span></div>
+  <div class="status-row"><span class="status-pill no">NÃO DÁ</span><span class="label">Subárea (níveis superiores)</span><span class="detail">Só o nível mais baixo tem relação indireta com o eSocial (via S-1200), o resto é 100% interno</span></div>
+
+  <h2 class="section-h">Como a extração é feita na prática</h2>
+  <p class="section-lead">Resumo — detalhe completo na aba "Caminhos de Extração".</p>
+  <div class="status-row"><span class="status-pill ok" style="width:90px">CAMINHO 1/2</span><span class="label">Em massa, por período</span><span class="detail">Janela de até 35 dias, sem filtro de CPF — traz todo mundo cuja admissão (ou folha) caiu naquele intervalo. Repetir janelas pra cobrir a história toda.</span></div>
+  <div class="status-row"><span class="status-pill ok" style="width:90px">CAMINHO 3</span><span class="label">Individual, por CPF</span><span class="detail">Mesmo evento, mesmo conteúdo completo — mas 1 pedido por pessoa. Só compensa pra isolar alguém específico, já sabendo a janela aproximada.</span></div>
+</section>
+</main>
+
+<footer>
+  Mapeamento de campos — layouts Buk (Colaboradores, Trabalhos, Subáreas) x eventos eSocial, validado com extrato real do cliente (competência 08/2026).
+</footer>
+
+<script>
+  document.getElementById('expandAll').addEventListener('click', () => {
+    document.querySelectorAll('details.sheet').forEach(d => d.open = true);
+  });
+  document.getElementById('collapseAll').addEventListener('click', () => {
+    document.querySelectorAll('details.sheet').forEach(d => d.open = false);
+  });
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tabpanel').forEach(p => p.hidden = true);
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).hidden = false;
+      window.scrollTo({top:0, behavior:'instant'});
+    });
+  });
+</script>
+
+</body>
+</html>
